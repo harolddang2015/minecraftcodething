@@ -1,7 +1,7 @@
 {
   "name": "realtime-workspace",
   "version": "1.2.0",
-  "description": "Realtime collaborative app with smooth cursors",
+  "description": "just cursors you",
   "main": "server.js",
   "type": "module",
   "scripts": {
