@@ -12,7 +12,11 @@ const cursorLayer = document.getElementById("cursors");
 
 let username = "";
 let joined = false;
-let cursors = new Map();
+
+// cursor systems
+const cursors = new Map();
+const targets = new Map();
+
 let lastMouse = 0;
 
 // JOIN
@@ -48,15 +52,13 @@ ws.onmessage = (e) => {
   }
 
   if (msg.type === "mouse_update") {
-    const el = cursors.get(msg.id);
-    if (el) {
-      el.style.left = msg.x + "px";
-      el.style.top = msg.y + "px";
+    if (targets.has(msg.id)) {
+      targets.set(msg.id, { x: msg.x, y: msg.y });
     }
   }
 };
 
-// SEND TEXT
+// TEXT
 function sendText() {
   if (!joined) return;
 
@@ -72,7 +74,7 @@ function sendText() {
 box1.addEventListener("input", sendText);
 box2.addEventListener("input", sendText);
 
-// CURSORS
+// USERS + CURSORS
 function updateUsers(users) {
   const seen = new Set();
 
@@ -81,35 +83,54 @@ function updateUsers(users) {
 
     seen.add(u.id);
 
-    let el = cursors.get(u.id);
-
-    if (!el) {
-      el = document.createElement("div");
+    if (!cursors.has(u.id)) {
+      const el = document.createElement("div");
       el.className = "cursor";
 
-      const label = document.createElement("span");
-      label.textContent = u.username;
+      const tag = document.createElement("div");
+      tag.className = "cursor-tag";
+      tag.textContent = u.username;
 
-      el.appendChild(label);
+      el.appendChild(tag);
       cursorLayer.appendChild(el);
 
       cursors.set(u.id, el);
+      targets.set(u.id, { x: u.x, y: u.y });
     }
-
-    el.style.left = u.x + "px";
-    el.style.top = u.y + "px";
   });
 
-  // remove old
   for (const [id, el] of cursors) {
     if (!seen.has(id)) {
       el.remove();
       cursors.delete(id);
+      targets.delete(id);
     }
   }
 }
 
-// MOUSE TRACK (THROTTLED)
+// SMOOTH ANIMATION (CANVA FEEL)
+function animate() {
+  for (const [id, el] of cursors) {
+    const t = targets.get(id);
+    if (!t) continue;
+
+    let x = parseFloat(el.dataset.x || t.x);
+    let y = parseFloat(el.dataset.y || t.y);
+
+    x += (t.x - x) * 0.25;
+    y += (t.y - y) * 0.25;
+
+    el.style.transform = `translate(${x}px, ${y}px)`;
+
+    el.dataset.x = x;
+    el.dataset.y = y;
+  }
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+// MOUSE SEND (THROTTLED)
 window.addEventListener("mousemove", (e) => {
   const now = Date.now();
   if (!joined || now - lastMouse < 30) return;

@@ -46,9 +46,7 @@ wss.on("connection", (ws) => {
     }
 
     if (msg.type === "join") {
-      const username = (msg.username || "")
-        .trim()
-        .slice(0, 15) || "Anonymous";
+      const username = (msg.username || "").trim().slice(0, 15) || "Anonymous";
 
       users.set(ws, {
         id,
@@ -62,11 +60,7 @@ wss.on("connection", (ws) => {
 
     if (msg.type === "update") {
       textState = { ...textState, ...msg.payload };
-
-      broadcast({
-        type: "update",
-        data: textState
-      }, ws);
+      broadcast({ type: "update", data: textState }, ws);
     }
 
     if (msg.type === "mouse_move") {
@@ -91,7 +85,4 @@ wss.on("connection", (ws) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log("Server running on port", PORT);
-});
+server.listen(process.env.PORT || 3000);
