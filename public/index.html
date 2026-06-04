@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realtime Workspace</title>
+
+<style>
+body {
+  font-family: system-ui;
+  background: #0b0b0e;
+  color: #e4e4e7;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Login screen */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #0b0b0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: #141419;
+  padding: 25px;
+  border-radius: 12px;
+  width: 300px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #09090b;
+  border: 1px solid #333;
+  color: white;
+}
+
+button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: #6366f1;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: #6366f1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cursor span {
+  position: absolute;
+  top: -18px;
+  left: 5px;
+  font-size: 10px;
+  background: #6366f1;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.credit {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<div id="login" class="overlay">
+  <div class="card">
+    <h3>Enter Workspace</h3>
+    <input id="username" placeholder="Username (max 15)" maxlength="15">
+    <button id="join">Join</button>
+  </div>
+</div>
+
+<div class="workspace">
+  <input id="box1" placeholder="Textbox 1">
+  <input id="box2" placeholder="Textbox 2">
+</div>
+
+<div id="cursors"></div>
+
+<div class="credit">Realtime Workspace • Render + WebSockets</div>
+
+<script src="app.js"></script>
+</body>
+</html>
